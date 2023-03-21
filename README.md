@@ -4,35 +4,59 @@ TensorFlow is an interface for expressing machine learning algorithms and an imp
 
 # Installation
 1. Install Anaconda
+
 ```curl -O https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh```
+
 ```bash Anaconda3-2023.03-Linux-x86_64```
+
 ```Do you accept the license terms [yes|no]```? Type ```yes``` to accept
+
 Choose the installation location
+
 ```Do you wish the installer to initialize Anaconda3 by running conda init? [yes|no]```, type ```no```
+
 Navigate to your home space and open the .bashrc file with an editor e.g., run the commands
+
 ```cd $HOME```
+
 ```vim .bashrc```
+
 Check for initialization code starts with ```>>> conda init >>>``` and ends with ```<<< conda init <<<```; while setup code may contain commands like export.Remove or comment out this code by adding # in front of each line.
+
 If the Anaconda installation path is ```$HOME/anaconda3```, skip this line; If not, add the command line ```export CONDA3PATH=<Anaconda3 installation path>```
 
 2. Tensorflow
+
 ```module purge```
+
 ```module load Conda/3```
+
 ```conda create --name tf```
+
 ```source activate tf```
+
 ```conda install -c conda-forge tensorflow```
+
 ```conda deactivate```
 
 3. Pytorch
+
 ```module purge```
+
 ```module load Conda/3```
+
 ```conda create -n tractseg```
+
 ```conda activate tractseg```
+
 ```conda install -c mrtrix3 mrtrix3```
+
 ```conda install pytorch```
+
 
 # References
 In order to install Anaconda, follow the instructions on the icer website: https://docs.icer.msu.edu/Using_conda/
+
 For installing pytorch, follow the instructions in this link: https.://docs.icer.msu.edu/LabNotebook_TractSeg/#lab-notebook-installing-tractseg-on-hpcc-using-conda. For tensorflow, use this link: https://docs.icer.msu.edu/Installing_TensorFlow_using_anaconda/
 
 https://www.tutorialspoint.com/pytorch/pytorch_introduction.htm
