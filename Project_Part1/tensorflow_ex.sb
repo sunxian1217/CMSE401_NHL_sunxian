@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH --job-name=tf2-test
+#SBATCH -N 1         
+#SBATCH -c 1
+#SBATCH --mem=8G         
+#SBATCH --time=00:20:00
+#SBATCH --gres=gpu:1     
+
+module load Conda/3 
+conda activate ./envs
+
+python example_code.py
