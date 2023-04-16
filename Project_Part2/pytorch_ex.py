@@ -19,11 +19,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 
-df = pd.read_json('2022_NHL.json')
-df = df.drop(['GameID','Season','SeasonType','Status','Day', 
-       'Updated', 'IsClosed', 'StadiumID', 'GlobalGameID', 'GlobalAwayTeamID',
-       'GlobalHomeTeamID', 'GameEndDateTime', 'NeutralVenue', 'DateTimeUTC',
-       'AwayTeamID', 'HomeTeamID', 'SeriesInfo'],axis=1)
 df = pd.read_json('2022_schedules.json')
 df = df.drop(['GameID', 'Season', 'SeasonType', 'Status', 'Day','AwayTeamID',
        'HomeTeamID', 'StadiumID', 'Channel','Updated','Period','TimeRemainingMinutes','TimeRemainingSeconds','LastPlay',
@@ -101,11 +96,6 @@ X_tensor = torch.Tensor(X.values)
 y_tensor = torch.Tensor(y.reshape(-1,1))
 
 # Split the data into training and testing sets
-X_train = X_tensor[:1000]
-y_train = y_tensor[:1000]
-X_test = X_tensor[1000:]
-y_test = y_tensor[1000:]
-
 X_train, X_test, y_train, y_test = train_test_split(X_tensor, y_tensor, test_size=0.2, random_state=42)
 
 # Normalize the input data
@@ -119,6 +109,9 @@ model = nn.Linear(X_tensor.shape[1], 1)
 # Define the loss function and optimizer
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01)
+batch_size = 32
+train_data = TensorDataset(torch.Tensor(X_train), torch.Tensor(y_train))
+train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
 # Train the model
 for epoch in range(100):
