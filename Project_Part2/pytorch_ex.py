@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
+torch.set_num_threads(4)
 
 df = pd.read_json('2022_schedules.json')
 df = df.drop(['GameID', 'Season', 'SeasonType', 'Status', 'Day','AwayTeamID',
