@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-torch.set_num_threads(4)
+from sklearn.metrics import accuracy_score
 
 observations = pd.read_csv('observations.csv')
 X = observations.drop(['outcome'], axis='columns')
@@ -22,27 +22,15 @@ X = X.astype({'awaywon': 'float32', 'awaylost': 'float32', 'homewon': 'float32',
               'PointSpreadHomeTeamMoneyLine': 'float32','HomeRotationNumber': 'float32', 'AwayRotationNumber': 'float32', 'OverPayout': 'float32',
               'UnderPayout':'float32'})
 
-# Convert the data to PyTorch tensors
-X_tensor = torch.Tensor(X.values)
-y_tensor = torch.Tensor(y.reshape(-1,1))
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_tensor, y_tensor, test_size=0.2, random_state=42)
+# Define the validation data
+X_val, y_val = torch.Tensor(X.values), torch.Tensor(y.reshape(-1,1))
 
-# Normalize the input data
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
-
-# Define the PyTorch model
-model = nn.Linear(X_tensor.shape[1], 1)
-
-# Define the loss function and optimizer
-criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01)
-batch_size = 32
-train_data = TensorDataset(torch.Tensor(X_train), torch.Tensor(y_train))
-train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+# Initialize early stopping variables
+best_loss = float('inf')
+best_epoch = 0
+patience = 10
+counter = 0
 
 # Train the model
 for epoch in range(100):
@@ -53,10 +41,28 @@ for epoch in range(100):
         loss = criterion(y_pred, y_batch)
         loss.backward()
         optimizer.step()
+        
+    # Evaluate the model on the validation set
+    with torch.no_grad():
+        y_val_pred = model(X_val)
+        val_loss = criterion(y_val_pred, y_val)
+    
+    # Check for improvement in validation loss
+    if val_loss < best_loss:
+        best_loss = val_loss
+        best_epoch = epoch
+        counter = 0
+    else:
+        counter += 1
+        
+    # Stop training if validation loss has not improved for `patience` epochs
+    if counter >= patience:
+        print(f'Early stopping: validation loss has not improved for {patience} epochs')
+        break
 
-# Evaluate the model on the test set
+# Evaluate the model on the test set using the best model from early stopping
 X_test_tensor = torch.Tensor(X_test)
 y_pred = model(X_test_tensor)
 predictions = (y_pred > 0).float()
-accuracy = (predictions == y_test).sum().item() / len(y_test)
+accuracy = accuracy_score(y_test, predictions)
 print("Accuracy:", accuracy)
