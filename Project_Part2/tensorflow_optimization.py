@@ -34,7 +34,7 @@ model.compile(optimizer='adam',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 # Train the model
-early_stopping = EarlyStopping('val_accuracy',patience=3)
+early_stopping = EarlyStopping('val_acc',patience=3)
 history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test),callbacks=[early_stopping])
 
 # Evaluate the model on the test set
