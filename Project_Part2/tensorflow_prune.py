@@ -50,7 +50,7 @@ callbacks = [
 pruned_model.fit(X_train, y_train,
                   batch_size=128, epochs=10, validation_split=0.2,
                   callbacks=callbacks)
-pruned_model.fit(X_train, y_train, epochs=10,batch_size=32128, validation_data=(X_test, y_test))
+pruned_model.fit(X_train, y_train, epochs=10,batch_size=128, validation_data=(X_test, y_test))
 
 # Evaluate the pruned and fine-tuned model on the test set
 test_loss, test_acc = pruned_model.evaluate(X_test, y_test, verbose=0)
